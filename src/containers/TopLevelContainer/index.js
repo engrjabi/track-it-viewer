@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '../../components/connectedComponents/ErrorBoundary';
-import Footer from '../../components/connectedComponents/Footer';
-import Header from '../../components/connectedComponents/Header';
+// import Footer from '../../components/connectedComponents/Footer';
+// import Header from '../../components/connectedComponents/Header';
 import { connect } from 'react-redux';
 import './style.css';
 
@@ -11,13 +11,13 @@ class TopLevelContainer extends React.Component {
 	render() {
 		return (
 			<div className={`app`}>
-				<Header/>
+				{/*<Header/>*/}
 				<ErrorBoundary>
 					<div className='main-content'>
 						{this.props.children}
 					</div>
 				</ErrorBoundary>
-				<Footer/>
+				{/*<Footer/>*/}
 			</div>
 		);
 	}
