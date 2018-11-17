@@ -8,18 +8,50 @@ import Avatar from '@material-ui/core/Avatar';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { styles } from './styles';
 import { preventDefaultEvent } from '../../utils/browserCommands';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 class CardList extends Component {
 
-	handleCardRedirect = (tile) => {
-		console.log('handle click');
+	state = {
+		isOpen: false,
+		photoToShow: 0,
+	};
+
+	handleCardClick = (indexId) => () => {
+		this.setState({
+			isOpen: true,
+			photoToShow: indexId
+		})
 	};
 
 	render() {
 		const { classes, cardList } = this.props;
+		const { photoToShow, isOpen } = this.state;
 
 		return (
 			<div className={classes.root}>
+
+				{isOpen && (
+					<Lightbox
+						imageCaption={cardList[photoToShow].title}
+						mainSrc={cardList[photoToShow].img}
+						nextSrc={cardList[(photoToShow + 1) % cardList.length].img}
+						prevSrc={cardList[(photoToShow + cardList.length - 1) % cardList.length].img}
+						onCloseRequest={() => this.setState({ isOpen: false })}
+						onMovePrevRequest={() =>
+							this.setState({
+								photoToShow: (photoToShow + cardList.length - 1) % cardList.length,
+							})
+						}
+						onMoveNextRequest={() =>
+							this.setState({
+								photoToShow: (photoToShow + 1) % cardList.length,
+							})
+						}
+					/>
+				)}
+
 				<GridList className={classes.gridList}>
 					{cardList.map((tile, indexId, tileCollection) => {
 						const doesImgExists = (tile && tile.hasOwnProperty('img'));
@@ -32,7 +64,7 @@ class CardList extends Component {
 								<ButtonBase
 									focusRipple
 									className={classes.buttonWrapper}
-									onClick={() => this.handleCardRedirect(tile)}
+									onClick={this.handleCardClick(indexId)}
 									focusVisibleClassName={classes.focusVisible}>
 
 									<div
