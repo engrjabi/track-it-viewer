@@ -12,6 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 import CardList from '../../components/CardList';
 import { sortAlphabetically } from '../../utils/Formatters';
 import Select from 'react-select';
+import moment from 'moment';
 import './style.css';
 
 const styles = theme => ({
@@ -76,11 +77,14 @@ class MainDashBoard extends Component {
 			.reduce((accumulator, file) => {
 				const splitPaths = file.path.split('/');
 				const date = splitPaths[1];
+				const img = URL.createObjectURL(file);
+				const title = file.name.split('.')[0];
+				const titleFormatted = moment(title, 'HH:mm').format('hh:mm A');
 
 				if (accumulator[date]) {
 					accumulator[date].push({
-						img: URL.createObjectURL(file),
-						title: file.name,
+						img,
+						title: titleFormatted,
 					})
 				} else {
 					groupDateOptions.push({
@@ -88,8 +92,8 @@ class MainDashBoard extends Component {
 						label: date,
 					});
 					accumulator[date] = [{
-						img: URL.createObjectURL(file),
-						title: file.name,
+						img,
+						title: titleFormatted,
 					}];
 				}
 
