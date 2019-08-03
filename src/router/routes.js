@@ -1,25 +1,18 @@
-import React from 'react';
-import { Route, Switch } from 'react-router';
-import {
-	AsyncMainDashBoard,
-	AsyncLandingPage,
-	AsyncNotFoundPage,
-} from './asyncLoaders';
+import React from "react";
+import { Route, Switch } from "react-router";
+import { AsyncMainDashBoard, AsyncNotFoundPage } from "./asyncLoaders";
 
 //----------------URL PATHS----------------//
 export const urlPaths = {
-	home: '/',
-	dashboard: '/dashboard',
+  home: "/"
 };
 
 //----------------ROUTES----------------//
 export default (
-	<Switch>
-		{/*no auth pages*/}
-		<Route exact path={urlPaths.home} component={AsyncLandingPage}/>
-		{/*need auth pages*/}
-		<Route path={urlPaths.dashboard} component={AsyncMainDashBoard}/>
-		{/*no page found*/}
-		<Route path="*" component={AsyncNotFoundPage}/>
-	</Switch>
+  <Switch>
+    {/*no auth pages*/}
+    <Route exact path={urlPaths.home} component={AsyncMainDashBoard} />
+    {/*no page found*/}
+    <Route path="*" component={AsyncNotFoundPage} />
+  </Switch>
 );
