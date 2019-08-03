@@ -1,13 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './containers/TopLevelContainer/style.css';
-import RootRoute from './router/RootRoute';
-import registerServiceWorker from './registerServiceWorker';
-import configureStore from './store/configureStore';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./containers/TopLevelContainer/style.css";
+import RootRoute from "./router/RootRoute";
+import registerServiceWorker from "./registerServiceWorker";
 
-const initialState = {};
-const target = document.getElementById('root');
-const { persistor, store, history } = configureStore(initialState);
+const target = document.getElementById("root");
 
-ReactDOM.render(<RootRoute persistor={persistor} store={store} history={history} />, target);
+ReactDOM.render(<RootRoute />, target);
 registerServiceWorker();

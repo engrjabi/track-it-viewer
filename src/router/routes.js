@@ -1,6 +1,8 @@
 import React from "react";
-import { Route, Switch } from "react-router";
 import { AsyncMainDashBoard, AsyncNotFoundPage } from "./asyncLoaders";
+
+let Home = () => <div>Home</div>;
+let Dash = () => <div>Dash</div>;
 
 //----------------URL PATHS----------------//
 export const urlPaths = {
@@ -9,10 +11,10 @@ export const urlPaths = {
 
 //----------------ROUTES----------------//
 export default (
-  <Switch>
+  <>
     {/*no auth pages*/}
-    <Route exact path={urlPaths.home} component={AsyncMainDashBoard} />
+    <Home path={urlPaths.home} />
     {/*no page found*/}
-    <Route path="*" component={AsyncNotFoundPage} />
-  </Switch>
+    <Dash path="*" />
+  </>
 );

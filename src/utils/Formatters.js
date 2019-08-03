@@ -1,9 +1,14 @@
+import _orderBy from "lodash/orderBy";
+import moment from "moment";
+
 export function sortObjKeysAlphabetically(obj) {
-	let ordered = {};
-	Object.keys(obj).sort().forEach(function (key) {
-		ordered[key] = obj[key];
-	});
-	return ordered;
+  let ordered = {};
+  Object.keys(obj)
+    .sort()
+    .forEach(function(key) {
+      ordered[key] = obj[key];
+    });
+  return ordered;
 }
 
 export const sortAlphabetically = propertyName => {
@@ -19,4 +24,24 @@ export const sortAlphabetically = propertyName => {
     // names must be equal
     return 0;
   };
+};
+
+export const sortByTime = (collection, path, timeFormat, direction = "asc") => {
+  return _orderBy(
+    collection,
+    function(o) {
+      return new moment(o[path], timeFormat);
+    },
+    [direction]
+  );
+};
+
+export const sortByDate = (collection, path, dateFormat, direction = "asc") => {
+  return _orderBy(
+    collection,
+    function(o) {
+      return new moment(o[path], dateFormat);
+    },
+    [direction]
+  );
 };
