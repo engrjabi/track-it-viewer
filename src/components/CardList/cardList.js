@@ -9,6 +9,7 @@ import { preventDefaultEvent } from "../../utils/browserCommands";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { cardListStyles } from "./cardListStyles";
+import _get from "lodash/get";
 
 const CardListWithHoc = ({ classes, cardList }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,17 @@ const CardListWithHoc = ({ classes, cardList }) => {
     <div className={classes.root}>
       {isOpen && (
         <Lightbox
-          imageCaption={cardList[photoToShow].title}
+          imageCaption={
+            <div className="m-0">
+              <p className="m-0">{_get(cardList, `${photoToShow}.title`)}</p>
+              <p className="m-0">
+                {_get(cardList, `${photoToShow}.activeWindowName`)}
+              </p>
+              <p className="m-0">
+                {_get(cardList, `${photoToShow}.activeWindowDetails[0].bin`)}
+              </p>
+            </div>
+          }
           mainSrc={cardList[photoToShow].img}
           nextSrc={cardList[(photoToShow + 1) % cardList.length].img}
           prevSrc={
@@ -62,9 +73,9 @@ const CardListWithHoc = ({ classes, cardList }) => {
                     doesImgExists ? classes.avatarWrapperHoverEffect : ""
                   }`}
                 >
-                  <Avatar aria-label="default-icon" className={classes.avatar}>
-                    {tile.title.substring(0, 2).toUpperCase()}
-                  </Avatar>
+                  <div className={classes.avatar}>
+                    {tile.activeWindowName || "No Window Name"}
+                  </div>
                 </div>
 
                 {doesImgExists && (

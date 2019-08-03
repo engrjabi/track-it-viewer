@@ -48,10 +48,9 @@ export const cardListStyles = theme => ({
   },
   avatar: {
     backgroundColor: red[500],
-    width: "60px",
-    height: "60px",
     position: "relative",
-    margin: "12% auto"
+    margin: "10% auto",
+    fontWeight: "bold"
   },
   buttonWrapper: {
     height: "100%",
