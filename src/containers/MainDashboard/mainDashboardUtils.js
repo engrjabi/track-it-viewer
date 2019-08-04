@@ -6,6 +6,9 @@ import _isArray from "lodash/isArray";
 import _get from "lodash/get";
 import promisesAll from "promises-all";
 import resemble from "resemblejs";
+import { CLICKUP_TICKET_NUMBER_REGEX } from "../../utils/regex";
+import _uniq from "lodash/uniq";
+import _flattenDeep from "lodash/flattenDeep";
 
 export const filesGroupByDate = files =>
   _groupBy(files, file => {
@@ -90,6 +93,7 @@ export const mergeMetaDataWithFilesForDisplay = async (selectedGroupWithMetaData
  * @return {Promise<*>}
  */
 export const addImageComparisonOnFilesForDisplay = async filesForDisplay => {
+  return filesForDisplay;
   console.log("DOING IMAGE COMPARISON FOR NOW THIS WILL TAKE TIME, PLEASE BE PATIENT");
   let count = 0;
 
@@ -120,4 +124,9 @@ export const addImageComparisonOnFilesForDisplay = async filesForDisplay => {
   );
 
   return imageComparisonResultCollection.resolve;
+};
+
+const makeTicketNumberFilterOption = list => {
+  const allTickets = list.map(card => _get(card, "ocrData", "").match(CLICKUP_TICKET_NUMBER_REGEX)).filter(card => card !== null);
+  return _uniq(_flattenDeep(allTickets)).map(ticketNumber => ticketNumber.trim());
 };

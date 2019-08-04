@@ -38,6 +38,7 @@ const MainDashBoard = ({ classes }) => {
 
   return (
     <section>
+      {/*TODO: Move to separate component*/}
       <div className={classes.dropZone}>
         <Dropzone disableClick disabled={loadingFiles} getDataTransferItems={handleData} onDrop={onDrop}>
           {({ getRootProps, getInputProps }) => {
@@ -56,6 +57,7 @@ const MainDashBoard = ({ classes }) => {
         </Dropzone>
       </div>
 
+      {/*TODO: Move to separate component*/}
       {groupDateOptions.length !== 0 && (
         <Select
           className={classes.mainDateSelector}
