@@ -8,6 +8,8 @@ import { CardList } from "../../components/CardList/cardList";
 import { addImageComparisonOnFilesForDisplay, filesGroupByDate, mergeMetaDataWithFilesForDisplay, shapeFilesForDisplay } from "./mainDashboardUtils";
 import { sortByDate, sortByTime } from "../../utils/Formatters";
 import { dateFormat } from "../../constants/date";
+import TextField from "@material-ui/core/TextField";
+import _get from "lodash/get";
 
 const MainDashBoard = ({ classes }) => {
   const [groupedFiles, setGroupedFiles] = useState([]);
@@ -15,6 +17,8 @@ const MainDashBoard = ({ classes }) => {
   const [loadingFiles, setLoadingFiles] = useState(false);
   const [groupDateOptions, setGroupDateOptions] = useState([]);
   const [selectedCollection, setSelectedCollection] = useState([]);
+  const [filteredSelectedCollection, setFilteredSelectedCollection] = useState([]);
+  const [searchWord, setSearchWord] = useState("");
 
   const handleData = e => {
     if (e.type === "drop") {
@@ -61,7 +65,7 @@ const MainDashBoard = ({ classes }) => {
       {groupDateOptions.length !== 0 && (
         <Select
           className={classes.mainDateSelector}
-          value={selectedDateGroup.value}
+          value={selectedDateGroup}
           onChange={async selected => {
             const selectedGroup = groupedFiles[selected.value] || [];
             const formattedGroup = shapeFilesForDisplay(selectedGroup);
@@ -70,13 +74,40 @@ const MainDashBoard = ({ classes }) => {
             const filesForDisplayFinalShape = await addImageComparisonOnFilesForDisplay(filesForDisplayWithMetaData);
 
             setSelectedCollection(filesForDisplayFinalShape);
-            setSelectedDateGroup(selectedGroup);
+            setFilteredSelectedCollection(filesForDisplayFinalShape);
+            setSelectedDateGroup(selected);
           }}
           options={groupDateOptions}
         />
       )}
 
-      <CardList cardList={selectedCollection} />
+      {/*TODO: Move to separate component*/}
+      {selectedDateGroup.value && (
+        <div className="w-100">
+          <TextField
+            className="w-100"
+            label="Search"
+            value={searchWord}
+            variant="filled"
+            onChange={e => {
+              setSearchWord(e.target.value);
+            }}
+            onKeyPress={e => {
+              const keycode = e.keyCode || e.which;
+              if (keycode === 13) {
+                const filtered = selectedCollection.filter(item => {
+                  const OCR = _get(item, "ocrData", "");
+                  const formattedDateTime = _get(item, "formattedDateTime", "");
+                  return OCR.includes(searchWord) || formattedDateTime.includes(searchWord);
+                });
+                setFilteredSelectedCollection(filtered);
+              }
+            }}
+          />
+        </div>
+      )}
+
+      <CardList cardList={filteredSelectedCollection} />
     </section>
   );
 };
