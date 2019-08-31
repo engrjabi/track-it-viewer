@@ -5,7 +5,13 @@ import { withStyles } from "@material-ui/core/styles";
 import Select from "react-select";
 import { mainDashboardStyles } from "./mainDashboardStyles";
 import { CardList } from "../../components/CardList/cardList";
-import { filesGroupByDate, makeTicketNumberFilterOption, mergeMetaDataWithFilesForDisplay, shapeFilesForDisplay } from "./mainDashboardUtils";
+import {
+  filesGroupByDate,
+  getIdleTimeData,
+  makeTicketNumberFilterOption,
+  mergeMetaDataWithFilesForDisplay,
+  shapeFilesForDisplay
+} from "./mainDashboardUtils";
 import { sortByDate, sortByTime } from "../../utils/Formatters";
 import { dateFormat } from "../../constants/date";
 import TextField from "@material-ui/core/TextField";
@@ -73,11 +79,10 @@ const MainDashBoard = ({ classes }) => {
             const formattedGroup = shapeFilesForDisplay(selectedGroup);
             const sortedGroup = sortByTime(formattedGroup, "title", "hh:mm A");
             const filesForDisplayWithMetaData = await mergeMetaDataWithFilesForDisplay(selectedGroup, sortedGroup);
+            const idleTimeData = getIdleTimeData(filesForDisplayWithMetaData);
 
-            console.log("Class: , Function: , Line 83 {filesForDisplayWithMetaData}(): ", { filesForDisplayWithMetaData });
-
-            setSelectedCollection(filesForDisplayWithMetaData);
-            setFilteredSelectedCollection(filesForDisplayWithMetaData);
+            setSelectedCollection(idleTimeData.noIdleTimeFiles);
+            setFilteredSelectedCollection(idleTimeData.noIdleTimeFiles);
             setSelectedDateGroup(selected);
           }}
           options={groupDateOptions}

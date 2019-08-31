@@ -45,3 +45,11 @@ export const sortByDate = (collection, path, dateFormat, direction = "asc") => {
     [direction]
   );
 };
+
+export function prettyFormatMinTime(n) {
+  const hours = n / 60;
+  const rHours = Math.floor(hours);
+  const minutes = (hours - rHours) * 60;
+  const rMinutes = Math.round(minutes);
+  return rHours + " hour(s) and " + rMinutes + " minute(s).";
+}

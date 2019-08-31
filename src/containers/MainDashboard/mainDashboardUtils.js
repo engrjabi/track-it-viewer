@@ -4,11 +4,11 @@ import moment from "moment";
 import { readAsText } from "promise-file-reader";
 import _isArray from "lodash/isArray";
 import _get from "lodash/get";
-import promisesAll from "promises-all";
-import resemble from "resemblejs";
+import _size from "lodash/size";
 import { CLICKUP_TICKET_NUMBER_REGEX } from "../../utils/regex";
 import _uniq from "lodash/uniq";
 import _flattenDeep from "lodash/flattenDeep";
+import { prettyFormatMinTime } from "../../utils/Formatters";
 
 export const filesGroupByDate = files =>
   _groupBy(files, file => {
@@ -79,6 +79,31 @@ export const mergeMetaDataWithFilesForDisplay = async (selectedGroupWithMetaData
       ...fileForDisplay
     };
   });
+};
+
+/**
+ * Used to filter out images that the user is idle. File collection should already contains a metadata
+ * about its comparison with the previous image
+ *
+ * @param filesForDisplay
+ * @param timePerImageInMin
+ */
+export const getIdleTimeData = (filesForDisplay, timePerImageInMin = 2) => {
+  const noIdleTimeFiles = filesForDisplay.filter(fileForDisplay => {
+    const rawMisMatchPercentage = _get(fileForDisplay, "diffWithPrev.rawMisMatchPercentage", 100);
+    return rawMisMatchPercentage > 3;
+  });
+
+  const totalUptime = _size(filesForDisplay) * timePerImageInMin;
+  const totalWorkingTime = _size(noIdleTimeFiles) * timePerImageInMin;
+  const totalIdleTime = totalUptime - totalWorkingTime;
+
+  return {
+    noIdleTimeFiles,
+    totalIdleTime: prettyFormatMinTime(totalIdleTime),
+    totalWorkingTime: prettyFormatMinTime(totalWorkingTime),
+    totalUptime: prettyFormatMinTime(totalUptime)
+  };
 };
 
 export const makeTicketNumberFilterOption = list => {
