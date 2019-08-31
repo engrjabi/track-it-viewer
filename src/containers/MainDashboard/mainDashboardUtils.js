@@ -126,7 +126,7 @@ export const addImageComparisonOnFilesForDisplay = async filesForDisplay => {
   return imageComparisonResultCollection.resolve;
 };
 
-const makeTicketNumberFilterOption = list => {
+export const makeTicketNumberFilterOption = list => {
   const allTickets = list.map(card => _get(card, "ocrData", "").match(CLICKUP_TICKET_NUMBER_REGEX)).filter(card => card !== null);
   return _uniq(_flattenDeep(allTickets)).map(ticketNumber => ticketNumber.trim());
 };

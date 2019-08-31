@@ -5,11 +5,19 @@ import { withStyles } from "@material-ui/core/styles";
 import Select from "react-select";
 import { mainDashboardStyles } from "./mainDashboardStyles";
 import { CardList } from "../../components/CardList/cardList";
-import { addImageComparisonOnFilesForDisplay, filesGroupByDate, mergeMetaDataWithFilesForDisplay, shapeFilesForDisplay } from "./mainDashboardUtils";
+import {
+  addImageComparisonOnFilesForDisplay,
+  filesGroupByDate,
+  makeTicketNumberFilterOption,
+  mergeMetaDataWithFilesForDisplay,
+  shapeFilesForDisplay
+} from "./mainDashboardUtils";
 import { sortByDate, sortByTime } from "../../utils/Formatters";
 import { dateFormat } from "../../constants/date";
 import TextField from "@material-ui/core/TextField";
 import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
+import Button from "@material-ui/core/Button";
 
 const MainDashBoard = ({ classes }) => {
   const [groupedFiles, setGroupedFiles] = useState([]);
@@ -79,6 +87,29 @@ const MainDashBoard = ({ classes }) => {
           }}
           options={groupDateOptions}
         />
+      )}
+
+      {/*TODO: Move to separate component*/}
+      {!_isEmpty(filteredSelectedCollection) && (
+        <div className="d-flex flex-wrap justify-content-center align-items-center">
+          {makeTicketNumberFilterOption(filteredSelectedCollection).map(ticketNumber => (
+            <Button
+              onClick={() => {
+                setSearchWord(ticketNumber);
+                const filtered = selectedCollection.filter(item => {
+                  const OCR = _get(item, "ocrData", "");
+                  const formattedDateTime = _get(item, "formattedDateTime", "");
+                  return OCR.includes(ticketNumber) || formattedDateTime.includes(ticketNumber);
+                });
+                setFilteredSelectedCollection(filtered);
+              }}
+              className="m-2"
+              key={ticketNumber}
+            >
+              {ticketNumber}
+            </Button>
+          ))}
+        </div>
       )}
 
       {/*TODO: Move to separate component*/}
