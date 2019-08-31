@@ -81,51 +81,6 @@ export const mergeMetaDataWithFilesForDisplay = async (selectedGroupWithMetaData
   });
 };
 
-/**
- * This function adds info about the comparison of the current active window image with the previous one from the collection. This will be used for
- * Displaying details on idle times of the user. If screen comparison is very similar it means that the user might have been idle.
- * To see similar images or idle times use this in console debugger temp1.resolve.filter(a => (a.differenceWithPrev || {}).rawMisMatchPercentage < 1.5)
- *
- * @todo find a way to make this faster, or at least cache it so it does not need to rerun on every visit
- * @todo if this cannot be faster consider moving this to track-it daemon instead
- *
- * @param filesForDisplay - the function assumes this argument to be already sorted and will return and process it on the same order it was passed
- * @return {Promise<*>}
- */
-export const addImageComparisonOnFilesForDisplay = async filesForDisplay => {
-  return filesForDisplay;
-  console.log("DOING IMAGE COMPARISON FOR NOW THIS WILL TAKE TIME, PLEASE BE PATIENT");
-  let count = 0;
-
-  const imageComparisonResultCollection = await promisesAll.all(
-    filesForDisplay.map(async (fileForDisplay, fileForDisplayIdx, fileForDisplayArr) => {
-      if (fileForDisplayIdx === 0) {
-        return fileForDisplay;
-      }
-
-      const current = fileForDisplay;
-      const prevIdx = fileForDisplayIdx - 1;
-      const prev = fileForDisplayArr[prevIdx];
-      const differenceWithPrev = await new Promise(resolve => {
-        resemble(current.raw)
-          .compareTo(prev.raw)
-          .ignoreLess()
-          .ignoreColors()
-          .onComplete(data => resolve(data));
-      });
-
-      count = count + 1;
-      console.log(`PROGRESS: ${count / fileForDisplayArr.length}`);
-      return {
-        ...fileForDisplay,
-        differenceWithPrev
-      };
-    })
-  );
-
-  return imageComparisonResultCollection.resolve;
-};
-
 export const makeTicketNumberFilterOption = list => {
   const allTickets = list.map(card => _get(card, "ocrData", "").match(CLICKUP_TICKET_NUMBER_REGEX)).filter(card => card !== null);
   return _uniq(_flattenDeep(allTickets)).map(ticketNumber => ticketNumber.trim());
