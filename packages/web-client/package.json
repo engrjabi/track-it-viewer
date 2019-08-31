@@ -1,5 +1,5 @@
 {
-  "name": "track-it-viewer",
+  "name": "@track-it/web-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
