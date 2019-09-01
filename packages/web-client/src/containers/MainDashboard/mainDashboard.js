@@ -18,6 +18,7 @@ import { dateFormat } from "../../constants/date";
 import TextField from "@material-ui/core/TextField";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import _find from "lodash/find";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -32,6 +33,7 @@ const MainDashBoard = ({ classes }) => {
   const [filteredSelectedCollection, setFilteredSelectedCollection] = useState([]);
   const [searchWord, setSearchWord] = useState("");
   const [clickUpTickets, setClickUpTickets] = useState([]);
+  const [idleTimeStatsDisplay, setIdleTimeStatsDisplay] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -81,6 +83,8 @@ const MainDashBoard = ({ classes }) => {
         </Dropzone>
       </div>
 
+      {!_isEmpty(idleTimeStatsDisplay) && <div className="text-center">{idleTimeStatsDisplay}</div>}
+
       {/*TODO: Move to separate component*/}
       {groupDateOptions.length !== 0 && (
         <Select
@@ -93,6 +97,7 @@ const MainDashBoard = ({ classes }) => {
             const filesForDisplayWithMetaData = await mergeMetaDataWithFilesForDisplay(selectedGroup, sortedGroup);
             const idleTimeData = getIdleTimeData(filesForDisplayWithMetaData);
             const filesWithTicketAssociation = setTicketAssociation(idleTimeData.noIdleTimeFiles, clickUpTickets);
+            setIdleTimeStatsDisplay(`Working(${idleTimeData.totalWorkingTime}) Idle(${idleTimeData.totalIdleTime})`);
 
             setSelectedCollection(filesWithTicketAssociation);
             setFilteredSelectedCollection(filesWithTicketAssociation);
@@ -108,6 +113,7 @@ const MainDashBoard = ({ classes }) => {
           {makeTicketNumberFilterOption(filteredSelectedCollection, clickUpTickets).map(ticketDetails => {
             const ticketNumber = ticketDetails.id;
             const prettyFormattedTime = prettyFormatMinTime(ticketDetails.imageCount * 2);
+            const assignedToMe = _find(ticketDetails.assignees, { username: "Alexander Joshua Ignacio" });
 
             return (
               <Tooltip disableFocusListener disableTouchListener title={ticketDetails.name} className="m-3" key={ticketNumber}>
@@ -119,6 +125,7 @@ const MainDashBoard = ({ classes }) => {
                   }}
                 >
                   <Button
+                    color={assignedToMe ? "primary" : "default"}
                     variant="contained"
                     onClick={() => {
                       setSearchWord(ticketNumber);
