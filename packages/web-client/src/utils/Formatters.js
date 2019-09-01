@@ -51,5 +51,10 @@ export function prettyFormatMinTime(n) {
   const rHours = Math.floor(hours);
   const minutes = (hours - rHours) * 60;
   const rMinutes = Math.round(minutes);
-  return rHours + " hour(s) and " + rMinutes + " minute(s).";
+
+  if (rHours === 0) {
+    return `${rMinutes}m`;
+  }
+
+  return `${rHours}h ${rMinutes}m`;
 }

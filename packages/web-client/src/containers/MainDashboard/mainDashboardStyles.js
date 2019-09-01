@@ -30,5 +30,9 @@ export const mainDashboardStyles = theme => ({
     height: 180,
     textAlign: "center",
     border: "2px dashed"
+  },
+  badgeFilter: {
+    height: "auto",
+    padding: "4px 3px"
   }
 });
